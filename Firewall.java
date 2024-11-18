@@ -1,1 +1,5 @@
-
+/*
+Loads the firewall rules from the input file
+Checks wheather specific traffic should be allowed or blocked.
+works as a security measure chekcing the files.
+*/
