@@ -1,1 +1,46 @@
 Project 3
+
+Group Members: Nancy Avila Do, Jackelyn Hernandez, Suhithareddy Kantareddy
+
+Git Repository link:
+
+How to compile and run the program:
+
+Files and Descriptions:
+CASSwitch.java
+CCSShadowSwitch.java
+CCSSwitch.java
+Firewall.java
+Firewall.txt
+Frame.java
+Main.java
+Makefile
+Node.java
+
+Checklist:
+Feature                                                                         Status/Description
+
+1) Project Compiles and Builds without warnings or errors                       complete
+2) Switch class                                                                 complete
+3) CAS, CCS Switches has a frame queue, and reads/writes                        complete
+   appropriately
+4) CAS, CCS Switches allows multiple connections                                complete
+5) CAS, CCS Switches flood frames when it doesn't know the                      complete
+   destination
+6) CAS, CCS Switches learn destinations, and doesn't                            Incomplete.
+   forward packets to any port except the one required
+7) CAS connects to CCS                                                          complete
+8) CAS receives local firewall rules                                            complete
+9) CAS forwards traffic and ACKs properly                                       complete
+10) CCS switch opens the firewall file and gets the rules                       complete
+11) CCS passes global traffic                                                   complete
+12) CCS does the global firewalls                                               complete
+13) CCS Shadow switches run and test properly                                   complete
+14) Node class                                                                  Partially Complete – see below
+15) Nodes instantiate, and open connection to the switch                        complete
+16) Nodes open their input files, and send data to switch.                      complete
+17) Nodes open their output files, and save data that they                      Partial – They also save flooded frames
+    received
+18) Node will sometimes drop acknowledgment                                     complete
+19) Node will sometimes create erroneous frame                                  complete
+20) Node will sometimes reject traffic                                          complete
