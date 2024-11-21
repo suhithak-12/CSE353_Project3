@@ -1,12 +1,18 @@
 CSE 3053 Project 3
 
 Group Members: Nancy Avila Do, Jackelyn Hernandez, Suhithareddy Kantareddy
+Group Member Jobs:
+Nancy Avila Do: CCSShadowSwitch.java, CCSSwitch.java, Makefile
+Jackelyn Hernandez: CASSwitch.java, Frame.java, Node.java
+Suhithareddy Kantareddy: Firewall.java, Main.java
+Whole Group: README and txt files
 
 Git Repository link:
 
 How to compile and run the program:
 
 Files and Descriptions:
+
 CASSwitch.java
 CCSShadowSwitch.java
 CCSSwitch.java
