@@ -6,3 +6,7 @@ Sends frames/data to the wanted nodes through CAS and CCS.
 writes recieved frames/data as an output file
 
 */
+
+public class Node {
+        
+}
