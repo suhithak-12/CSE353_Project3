@@ -4,8 +4,8 @@ import java.io.IOException;
 
 
 public class Frame{
-        private byte source; //source address
-        private byte destination; //destination address
+        public byte source; //source address
+        public byte destination; //destination address
         private byte size; //size of data
         private byte crc; // cyclic reduncancy check - contains the sum of the byte values of the frame
         private byte[] data; //data

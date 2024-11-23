@@ -21,7 +21,14 @@ public class CCSSwitch {
         try(BufferedReader br = new BufferedReader(new FileReader(fireRules))){
             String rule;
             while ((rule = br.readLine()) != null){
-                rules.add(rule);
+                String[] rls = rule.split("_");
+                if (rls.length==2){
+                    String key = rls[0];
+                    String value = rls[0];
+                    
+                    rules.add(key);
+                    rules.add(value);
+                }
             }
             System.out.println("File received and read");
             System.out.println(rules);//for testing purposes
@@ -45,10 +52,11 @@ public class CCSSwitch {
     public boolean checkRule(Frame frame, ArrayList<String> rules){
         for (String r: rules){
             //need to figure out why source and destination is not working rn b/c there is a squiggle line
-            if(frame.source.equals(r.source) && frame.destination.equals(r.destination)){
+            if(frame.source == r.source && frame.destination == r.destination){
                 return true;
             }
         }
+        return false;
     }
 
     //frame flooding
@@ -61,13 +69,18 @@ public class CCSSwitch {
 
     //send the traffic
     public void sendTraffic(Frame frame, ArrayList<String> cas){
-        //unsure what to do here either
+        for(String c: cas){
+            //will this work?
+            //c.recieveTraffic(frame, cas);
+        }
+        System.out.println("Traffic Sent");
     }
 
     //traffic handler
     public void trafficHandler(Frame frame){
-        if(setRules.checkRule(frame,cas)){//idk what to do here yet
+        if(checkRule(frame,rules)){//idk what to do here yet
             sendTraffic(frame, cas);
+            System.out.println("Traffic has been sent to:" + frame.getSource() + "and" + frame.getDest() + "\n");
 
         }else{
             System.out.println("Error: No permission from the firewall");
