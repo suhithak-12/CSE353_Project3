@@ -1,6 +1,7 @@
 CSE 3053 Project 3
 
 Group Members: Nancy Avila Do, Jackelyn Hernandez, Suhithareddy Kantareddy
+
 Group Member Jobs:
 Nancy Avila Do: CCSShadowSwitch.java, CCSSwitch.java, Makefile
 Jackelyn Hernandez: CASSwitch.java, Frame.java, Node.java
@@ -14,14 +15,23 @@ How to compile and run the program:
 Files and Descriptions:
 
 CASSwitch.java
+   Core switch in a star handles traffic, global traffic forwards to the CCS switch, implements frame forwarding logic, local firewall rules that are recieved from CCS switch, and supports multiple connections through threading. It contains the following functions: CASSwitch(int port), start(),
 CCSShadowSwitch.java
+   A back up of the CCSSwitch.java. It works exactly like the CCSSwitch.java file, but it is used as a back up if the main files fails.
 CCSSwitch.java
+   Central core switch for the SoSs network which creates a bridge bwtween CAS swicthes for global communication and implements fire wall rules (globally) ACKs for global traffic, sends local firewall rules to CAS swicthes. It handles traffic between CAS switches. It has the following functions: readFirewall(), setRule(ArrayList<String> rules), sendRules(), checkrules(Frame frame, ArrayList<String> rules), flooding(Frame frame), sendTraffic(Frame frame, ArrayList<String> cas), trafficHandler(Frame frame).
 Firewall.java
+   Loads the firewall rules from the input file and checks whether specific traffic should be allowed or blocked. It works as a security measure chekcing the files. It has the following functions: Firewall(), loadrules(String name), isAllowed(String source, String destination), and printRules().
 Firewall.txt
+   Contains the rules of the firewall.
 Frame.java
+   The frame for the project.
 Main.java
+   The project is initiated through this class.
 Makefile
+   The Makefile for the java files.
 Node.java
+   Connects nodes to their assosiated CAS switch,reads input data and sends them to designated nodes, sends frames/data to the wanted nodes through CAS and CCS, and writes recieved frames/data as an output file. It has the following functions: Node(byte networkID, byte nodeID, String address, int port, String inputFile, String outputFile), connectToSwitch(), simulateError(), simulateACKFail(), send(), recieve(), Close(), and run().
 
 Checklist:
 Feature                                                                         Status/Description
@@ -45,8 +55,8 @@ Feature                                                                         
 14) Node class                                                                  Partially Complete – see below
 15) Nodes instantiate, and open connection to the switch                        complete
 16) Nodes open their input files, and send data to switch.                      complete
-17) Nodes open their output files, and save data that they                      Partial – They also save flooded frames
-    received
+17) Nodes open their output files, and save data that they                      Partial – They also save flooded
+                                                                                frames received
 18) Node will sometimes drop acknowledgment                                     complete
 19) Node will sometimes create erroneous frame                                  complete
 20) Node will sometimes reject traffic                                          complete

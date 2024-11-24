@@ -44,8 +44,8 @@ public class CCSSwitch {
 
     public void sendRules(){
         for (String c : cas){
-            //waiting for recieve rules from CAS file
-            //c.recieveRules(this.rules);
+            //recieve rules from CAS file
+            c.recieveRules(this.rules);
         }
     }
 
@@ -63,7 +63,7 @@ public class CCSSwitch {
     public void flooding(Frame frame){
         for (String c: cas){
             //recieveFrame from CAS file
-            //c.recieveFrame(frame);
+            c.recieveFrame(frame);
         }
     }
 
@@ -71,7 +71,7 @@ public class CCSSwitch {
     public void sendTraffic(Frame frame, ArrayList<String> cas){
         for(String c: cas){
             //will this work?
-            //c.recieveTraffic(frame, cas);
+            c.recieveTraffic(frame, cas);
         }
         System.out.println("Traffic Sent");
     }
