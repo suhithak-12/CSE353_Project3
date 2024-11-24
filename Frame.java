@@ -17,7 +17,7 @@ public class Frame{
                 this.destination = destination;
                 this.size = size;
                 this.data = data;
-                this.crc = computerCRC();
+                this.crc = computeCRC();
         }
 
         //contructor for ACK
@@ -65,7 +65,7 @@ public class Frame{
         }
 
         //computer CRCf
-        private byte computerCRC(){
+        private byte computeCRC(){
                 int checksum = source + destination + size;
                 if (data != null){
                         for(byte b : data){
