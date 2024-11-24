@@ -1,12 +1,14 @@
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
 import java.io.IOException;
 
 
 public class Frame{
-        private byte source; //source address
-        private byte destination; //destination address
+        public byte source; //source address
+        public byte destination; //destination address
         private byte size; //size of data
+        private byte crc; // cyclic reduncancy check - contains the sum of the byte values of the frame
         private byte[] data; //data
 
         // constructor for frame 
@@ -15,6 +17,7 @@ public class Frame{
                 this.destination = destination;
                 this.size = size;
                 this.data = data;
+                this.crc = computeCRC();
         }
 
         //contructor for ACK
@@ -32,7 +35,7 @@ public class Frame{
                 if(size >0 && data != null){//checks if size if greater than 0 and data is null
                         bs.write(data);//writes data of the array
                 }
-
+                bs.write(crc);
                 return bs.toByteArray();
 
         }
@@ -50,7 +53,35 @@ public class Frame{
                         bs.read(data);//reads array
                 }
 
-                return new Frame(source, destination, size, data);
+                byte receivedCRD = (byte) bs.read();
+                Frame frame = new Frame(source, destination, size, data);
+
+                if(frame.crc != receivedCRD){
+                        System.err.println("CRC validation failed");
+                        return null;
+                }
+
+                return frame;
+        }
+
+        //computer CRCf
+        private byte computeCRC(){
+                int checksum = source + destination + size;
+                if (data != null){
+                        for(byte b : data){
+                                checksum += b;
+                        }
+                }
+                return (byte)(checksum & 0xFF); //fits in one byte
+        }
+
+        public boolean isAck(){
+                return size == 0;
+        }
+
+        //unique identifier for frame
+        public String getFrameID(){
+                return source + "-" + destination + "-" + size + "-" + Arrays.hashCode(data);
         }
 
         // getters
@@ -69,5 +100,7 @@ public class Frame{
         public byte[] getData(){
                 return data;
         }
+
+
 }
 
