@@ -67,7 +67,7 @@ public class Node extends Thread {
                 //impliment reading line
                 try{
                         String line;
-                        if((line = this.fileReader.readLine()) != null){
+                        while((line = this.fileReader.readLine()) != null){
                                 String[] parts = line.split(":");
                                 if(parts.length == 2){
                                         byte destNodeID = Byte.parseByte(parts[0]);
