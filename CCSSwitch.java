@@ -1,13 +1,18 @@
 /*
-NANCy
-This is just a backup to the CSS swicth i'm not sure if we actually need this but it's written in the requirements. 
-Supposed to just shadow the CCS swicth file.
+NANCY
+Central core switch for the SoSs network
+creates a bridge bwtween CAS swicthes for global communication
+implements fire wall rules (globally)
+ACKs for global traffic
+sends local firewall rules to CAS swicthes
+Handles traffic bw CAS switches
 */
+
 
 import java.io.*;
 import java.util.*;
 
-public class CCSShadowSwitch{
+public class CCSSwitch {
     ArrayList<String> rules= new ArrayList<>();
     ArrayList<String> cas = new ArrayList<>();
 
@@ -34,18 +39,18 @@ public class CCSShadowSwitch{
         }
     }
 
-    public void shadowSetRules(ArrayList<String> rules){
+    public void setRules(ArrayList<String> rules){
         this.rules = rules;
     }
 
-    public void shadowSendRules(){
+    public void sendRules(){
         for (String c : cas){
             //recieve rules from CAS file
             c.recieveRules(this.rules);
         }
     }
 
-    public boolean shadowCheckRule(Frame frame, ArrayList<String> rules){
+    public boolean checkRule(Frame frame, ArrayList<String> rules){
         for (String r: rules){
             //need to figure out why source and destination is not working rn b/c there is a squiggle line
             if(frame.source == r.source && frame.destination == r.destination){
@@ -56,7 +61,7 @@ public class CCSShadowSwitch{
     }
 
     //frame flooding
-    public void shadowFlooding(Frame frame){
+    public void flooding(Frame frame){
         for (String c: cas){
             //recieveFrame from CAS file
             c.recieveFrame(frame);
@@ -64,7 +69,7 @@ public class CCSShadowSwitch{
     }
 
     //send the traffic
-    public void shadowSendTraffic(Frame frame, ArrayList<String> cas){
+    public void sendTraffic(Frame frame, ArrayList<String> cas){
         for(String c: cas){
             //will this work?
             c.recieveTraffic(frame, cas);
@@ -73,13 +78,14 @@ public class CCSShadowSwitch{
     }
 
     //traffic handler
-    public void shadowTH(Frame frame){
-        if(shadowCheckRule(frame,rules)){//idk what to do here yet
-            shadowSendTraffic(frame, cas);
+    public void trafficHandler(Frame frame){
+        if(checkRule(frame,rules)){//idk what to do here yet
+            sendTraffic(frame, cas);
             System.out.println("Traffic has been sent to:" + frame.getSource() + "and" + frame.getDest() + "\n");
 
         }else{
             System.out.println("Error: No permission from the firewall");
         }
     }
+
 }
