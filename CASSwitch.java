@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -20,12 +22,14 @@ public class CASSwitch {
         private HashMap<Byte, Socket> nodeConnections; //map nodeID to socket
         private ExecutorService threadPool; //handling connections
         private HashMap<Byte, Boolean> firewallRules; // allow or block traffic
+        private HashMap<String, Socket> globalconnections; //conenctions to other cas switch or ccs
 
         public CASSwitch(int port){
                 this.port = port;
                 this.nodeConnections = new HashMap<>();
                 this.firewallRules = new HashMap<>();
                 this.threadPool = Executors.newCachedThreadPool();
+                this.globalconnections = new HashMap<>();
         }
 
         public void start(){
@@ -96,14 +100,63 @@ public class CASSwitch {
                         dOutputStream.write(frame.toBytes());
                         dOutputStream.flush();
                         System.out.println("Forward frame to Node " + destination);
-                } else {
+                } else if (globalconnections.containsKey("CCS")) {
+                        Socket ccsSocket = globalconnections.get("CCS");
+                        DataOutputStream ccsOutputStream = new DataOutputStream(ccsSocket.getOutputStream());
+
+                        ccsOutputStream.write(frame.toBytes());
+                        ccsOutputStream.flush();
+                        System.out.println("Forwarded frame to CCSSwitch for global traffic");
+                }else {
                         System.out.println("Node " + destination + "not found. Forwarding to ccs...");
                         // forwarding ccs logic here
                 }
         }
 
+        public void recieveFrame(Frame frame) {
+                System.out.println("Frame recieved from: "+frame.getSource());
+                for (Socket nodeSocket: nodeConnections.values()) {
+                        try {
+                                DataOutputStream outputStream = new DataOutputStream(nodeSocket.getOutputStream());
+                                outputStream.write(frame.toBytes());
+                                outputStream.flush();
+                            } catch (IOException e) {
+                                System.err.println("Error flooding frame: " + e.getMessage());
+                            }
+                }
+        }
+
+        public void receiveTraffic(Frame frame) {
+                System.out.println("Receiving targeted traffic for frame: " + frame);
+                try {
+                    forwardFrame(frame);
+                } catch (IOException e) {
+                    System.err.println("Error forwarding targeted traffic: " + e.getMessage());
+                }
+            }
+
+        public boolean hasNode(byte node) {
+                return nodeConnections.containsKey(node);
+        }
+        
+
         private void updateFirewallRule(byte nodeID, boolean allow){
                 firewallRules.put(nodeID, allow);
                 System.out.println("Updated firewall rule for node: " + nodeID + ": " + (allow ? "ALLOW" : "BLOCK" ));
+        }
+
+        // public void recieveRules(HashMap<Byte, Boolean> newrules){
+        //         this.firewallRules = newrules;
+        //         System.out.println("Firewall rules updated by CCSSwitch");
+        // }
+ 
+        public void connectCCS(String CCSHost, int port){
+                try{
+                        Socket CCSsocket = new Socket(CCSHost, port);
+                        globalconnections.put("CCS", CCSsocket);
+                        System.out.println("Connected to CCS switch at: " +CCSHost + ":" +port);
+                } catch (IOException e) {
+                        System.out.println("error occured: " + e.getMessage());
+                }
         }
 }
