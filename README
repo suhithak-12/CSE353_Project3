@@ -6,7 +6,7 @@ Group Member Jobs:
 Nancy Avila Do: CCSShadowSwitch.java, CCSSwitch.java, Makefile
 Jackelyn Hernandez: CASSwitch.java, Update Frame.java(project 2), Node.java
 Suhithareddy Kantareddy: Firewall.java, Main.java
-Whole Group: README and txt files
+Whole Group: README, txt files and final chnages done through live share.
 
 Bugs: It has an issue with the port numbers. For some reason it continues to run after a period of time and is not shutting down properly even though there is a shutdown method present.
 
