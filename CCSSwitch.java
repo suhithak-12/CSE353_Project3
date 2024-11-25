@@ -12,7 +12,7 @@ import java.io.*;
 import java.util.*;
 
 public class CCSSwitch {
-    Map<String, Set<String>> rules = new HashMap();
+    Map<String, Set<String>> rules = new HashMap<>();
     ArrayList<CASSwitch> cas = new ArrayList<>();
 
     //read the rules of the firewall
@@ -24,7 +24,7 @@ public class CCSSwitch {
                 String[] rls = rule.split("_");
                 if (rls.length==2){
                     String key = rls[0];
-                    String value = rls[0];
+                    String value = rls[1];
 
                     rules.putIfAbsent(key, new HashSet<>());
                     rules.get(key).add(value);
