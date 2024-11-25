@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-//SUHITHA
->>>>>>> 29fcf82d17b87b81a1e0150b815b068e967207ce
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -33,7 +29,7 @@ public class Main {
 
         // add CAS switches to the CCS switch
         for (CASSwitch casSwitch : casSwitches) {
-            ccsSwitch.addCASSwitch(casSwitch);
+            ccsSwitch.add(casSwitch);
         }
 
         // connect CCS switch to the CAS switches

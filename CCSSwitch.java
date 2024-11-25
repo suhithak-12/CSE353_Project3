@@ -122,4 +122,9 @@ public class CCSSwitch {
         throw new UnsupportedOperationException("Unimplemented method 'start'");
     }
 
+    public void add(CASSwitch casSwitch) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'add'");
+    }
+
 }
