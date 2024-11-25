@@ -8,8 +8,8 @@ import java.io.*;
 import java.util.*;
 
 public class CCSShadowSwitch{
-    ArrayList<String> rules= new ArrayList<>();
-    ArrayList<String> cas = new ArrayList<>();
+    Map<String, Set<String>> rules = new HashMap<>();
+    ArrayList<CASSwitch> cas = new ArrayList<>();
 
     //read the rules of the firewall
     public void readFirewall() throws IOException{
@@ -22,8 +22,8 @@ public class CCSShadowSwitch{
                     String key = rls[0];
                     String value = rls[1];
                     
-                    rules.add(key);
-                    rules.add(value);
+                    rules.putIfAbsent(key, new HashSet<>());
+                    rules.get(key).add(value);
                 }
             }
             System.out.println("File received and read");
@@ -34,48 +34,70 @@ public class CCSShadowSwitch{
         }
     }
 
-    public void shadowSetRules(ArrayList<String> rules){
+    public void shadowSetRules(Map<String, Set<String>> rules){
         this.rules = rules;
     }
 
     public void shadowSendRules(){
-        for (String c : cas){
-            //recieve rules from CAS file
-            c.recieveRules(this.rules);
+        for (CASSwitch c : cas){
+
+            HashMap<Byte, Boolean> convertedRules = new HashMap<>();
+           
+            for (Map.Entry<String, Set<String>> entry : rules.entrySet()){
+                String source = entry.getKey();
+                Set<String> destinations = entry.getValue();
+
+                byte nodeID = (byte) Integer.parseInt(source);
+                boolean isAllowedByFirewall = !destinations.isEmpty();
+                convertedRules.put(nodeID, isAllowedByFirewall);
+            }
+
+            c.recieveRules(convertedRules);
         }
+        System.out.println("Firewall rules sent to all CAS switches.");
     }
 
-    public boolean shadowCheckRule(Frame frame, ArrayList<String> rules){
-        for (String r: rules){
-            //need to figure out why source and destination is not working rn b/c there is a squiggle line
-            if(frame.source == r.source && frame.destination == r.destination){
-                return true;
-            }
+    public boolean shadowCheckRule(Frame frame){
+        String source = Byte.toString(frame.getSource());
+        String destination = Byte.toString(frame.getDest());
+
+        if(rules.containsKey(source)){
+            return rules.get(source).contains(destination);
         }
-        return false;
+        return true;
     }
 
     //frame flooding
     public void shadowFlooding(Frame frame){
-        for (String c: cas){
+        for (CASSwitch c: cas){
             //recieveFrame from CAS file
             c.recieveFrame(frame);
         }
+        System.out.println("Frame flooded to all CAS switches.");
     }
 
     //send the traffic
-    public void shadowSendTraffic(Frame frame, ArrayList<String> cas){
-        for(String c: cas){
-            //will this work?
-            c.recieveTraffic(frame, cas);
+    public void shadowSendTraffic(Frame frame){
+        Byte destination = frame.getDest();
+        boolean found = false; 
+
+        for (CASSwitch c : cas) {
+            if (c.hasNode(destination)) {
+                c.receiveTraffic(frame);
+                System.out.println("Traffic sent to " + destination);
+                found = true;
+                break;
+            }
         }
-        System.out.println("Traffic Sent");
+        if (!found) {
+        System.out.println("destinatnion not found for "+frame);
+        }
     }
 
     //traffic handler
     public void shadowTH(Frame frame){
-        if(shadowCheckRule(frame,rules)){//idk what to do here yet
-            shadowSendTraffic(frame, cas);
+        if(shadowCheckRule(frame)){
+            shadowSendTraffic(frame);
             System.out.println("Traffic has been sent to:" + frame.getSource() + "and" + frame.getDest() + "\n");
 
         }else{

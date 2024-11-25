@@ -12,8 +12,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -58,7 +56,7 @@ public class CASSwitch {
                         // listen for frames
                         while(true){
                                 byte[] frameBytes = new byte[256];
-                                int bytesRead = inputStream.read(frameBytes);
+                                //int bytesRead = inputStream.read(frameBytes);
 
                                 if (nodeID == 1) {
                                         updateFirewallRule(nodeID, true); // allow node 1
