@@ -82,4 +82,9 @@ public class CCSShadowSwitch{
             System.out.println("Error: No permission from the firewall");
         }
     }
+
+    public void shutdown() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'shutdown'");
+    }
 }

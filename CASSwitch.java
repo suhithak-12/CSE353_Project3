@@ -159,4 +159,9 @@ public class CASSwitch {
                         System.out.println("error occured: " + e.getMessage());
                 }
         }
+
+        public void shutdown() {
+                // TODO Auto-generated method stub
+                throw new UnsupportedOperationException("Unimplemented method 'shutdown'");
+        }
 }
