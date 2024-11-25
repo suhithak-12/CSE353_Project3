@@ -145,10 +145,10 @@ public class CASSwitch {
                 System.out.println("Updated firewall rule for node: " + nodeID + ": " + (allow ? "ALLOW" : "BLOCK" ));
         }
 
-        // public void recieveRules(HashMap<Byte, Boolean> newrules){
-        //         this.firewallRules = newrules;
-        //         System.out.println("Firewall rules updated by CCSSwitch");
-        // }
+        public void recieveRules(HashMap<Byte, Boolean> newrules){
+                 this.firewallRules = newrules;
+                 System.out.println("Firewall rules updated by CCSSwitch");
+        }
  
         public void connectCCS(String CCSHost, int port){
                 try{
