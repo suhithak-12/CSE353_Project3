@@ -13,7 +13,6 @@ import java.util.*;
 
 public class CCSSwitch {
     Map<String, Set<String>> rules = new HashMap();
-    // ArrayList<String> rules= new ArrayList<>();
     ArrayList<CASSwitch> cas = new ArrayList<>();
 
     //read the rules of the firewall
@@ -43,8 +42,19 @@ public class CCSSwitch {
 
     public void sendRules(){
         for (CASSwitch c : cas){
-            //recieve rules from CAS file
-            c.recieveRules(rules);
+
+            HashMap<Byte, Boolean> convertedRules = new HashMap<>();
+           
+            for (Map.Entry<String, Set<String>> entry : rules.entrySet()){
+                String source = entry.getKey();
+                Set<String> destinations = entry.getValue();
+
+                byte nodeID = (byte) Integer.parseInt(source);
+                boolean isAllowedByFirewall = !destinations.isEmpty();
+                convertedRules.put(nodeID, isAllowedByFirewall);
+            }
+
+            c.recieveRules(convertedRules);
         }
         System.out.println("Firewall rules sent to all CAS switches.");
     }
@@ -74,7 +84,7 @@ public class CCSSwitch {
 
         for (CASSwitch c : cas) {
             if (c.hasNode(destination)) {
-                c.recieveTraffic(frame);
+                c.receiveTraffic(frame);
                 System.out.println("Traffic sent to " + destination);
                 found = true;
                 break;
@@ -95,8 +105,10 @@ public class CCSSwitch {
             System.out.println("Error: No permission from the firewall");
         }
     }
-    public void addCASSwitch(CASSwitch cas) {
-        cas.add(cas);
+
+    public void addCASSwitch(int port) {
+        CASSwitch CASSwitch = new CASSwitch(port);
+        cas.add(CASSwitch);
         System.out.println("CAS switch added to CCS.");
     }
 

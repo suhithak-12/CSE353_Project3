@@ -20,7 +20,7 @@ public class CCSShadowSwitch{
                 String[] rls = rule.split("_");
                 if (rls.length==2){
                     String key = rls[0];
-                    String value = rls[0];
+                    String value = rls[1];
                     
                     rules.add(key);
                     rules.add(value);
