@@ -27,10 +27,10 @@ public class Main {
             casSwitches.add(casSwitch);
         }
 
-        // add CAS switches to the CCS switch
-        for (CASSwitch casSwitch : casSwitches) {
-            ccsSwitch.add(casSwitch);
-        }
+        // // add CAS switches to the CCS switch
+        // for (CASSwitch casSwitch : casSwitches) {
+        //     ccsSwitch.add(casSwitch);
+        // }
 
         // connect CCS switch to the CAS switches
         try {

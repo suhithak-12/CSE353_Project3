@@ -1,5 +1,4 @@
 /*
-NANCY
 Central core switch for the SoSs network
 creates a bridge bwtween CAS swicthes for global communication
 implements fire wall rules (globally)
@@ -28,8 +27,6 @@ public class CCSSwitch {
 
                     rules.putIfAbsent(key, new HashSet<>());
                     rules.get(key).add(value);
-                    // rules.add(key);
-                    // rules.add(value);
                 }
             }
             System.out.println("File received and read");
@@ -40,6 +37,7 @@ public class CCSSwitch {
         }
     }
 
+    //sends rules to the CAS Switch
     public void sendRules(){
         for (CASSwitch c : cas){
 
@@ -59,6 +57,7 @@ public class CCSSwitch {
         System.out.println("Firewall rules sent to all CAS switches.");
     }
 
+    //checks if the rules match up
     public boolean checkRule(Frame frame){
         String source = Byte.toString(frame.getSource());
         String destination = Byte.toString(frame.getDest());
@@ -78,6 +77,7 @@ public class CCSSwitch {
         System.out.println("Frame flooded to all CAS switches.");
     }
 
+    //sends the traffic to CAS
     public void sendTraffic(Frame frame){
         Byte destination = frame.getDest();
         boolean found = false; 
@@ -106,25 +106,45 @@ public class CCSSwitch {
         }
     }
 
-    public void addCASSwitch(int port) {
+    /*public void add(int port) {
         CASSwitch CASSwitch = new CASSwitch(port);
         cas.add(CASSwitch);
         System.out.println("CAS switch added to CCS.");
-    }
+    }*/
 
+    //shutdowns the CCS switch
     public void shutdown() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'shutdown'");
+        System.out.println("Shutting down CCS Switch...");
+        for (CASSwitch casSwitch : cas) {
+            casSwitch.shutdown();
+        }
+        System.out.println("CCS Switch shut down successfully.");
     }
 
+    //starting the CCS Switch
     public void start() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'start'");
+        System.out.println("Starting CCS Switch...");
+        try {
+            // Load firewall rules
+            readFirewall();
+            sendRules();
+
+            // Start all connected CAS switches
+            for (CASSwitch casSwitch : cas) {
+                new Thread(casSwitch::start).start();
+            }
+
+            System.out.println("CCS Switch is running.");
+        } catch (IOException e) {
+            System.err.println("Error starting CCS Switch: " + e.getMessage());
+        }
     }
 
-    public void add(CASSwitch casSwitch) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'add'");
+    //Adding the CAS Switch
+    public void add(int basePort, int index) {
+        int port = basePort + index; 
+        CASSwitch casSwitch = new CASSwitch(port);
+        cas.add(casSwitch);
+        System.out.println("CAS switch added to CCS: " + casSwitch);
     }
-
-}
+    }

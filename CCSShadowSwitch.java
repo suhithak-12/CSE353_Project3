@@ -1,7 +1,5 @@
 /*
-NANCy
-This is just a backup to the CSS swicth i'm not sure if we actually need this but it's written in the requirements. 
-Supposed to just shadow the CCS swicth file.
+This is a backup CCSSwitch that has the same functionality as the CCSSwitch.java
 */
 
 import java.io.*;
@@ -90,7 +88,7 @@ public class CCSShadowSwitch{
             }
         }
         if (!found) {
-        System.out.println("destinatnion not found for "+frame);
+        System.out.println("destinatnion not found for "+ frame);
         }
     }
 
@@ -105,8 +103,20 @@ public class CCSShadowSwitch{
         }
     }
 
-    public void shutdown() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'shutdown'");
+    // public void addCASSwitch(int port) {
+    //     CASSwitch CASSwitch = new CASSwitch(port);
+    //     cas.add(CASSwitch);
+    //     System.out.println("CAS switch added to CCS.");
+    // }
+
+    public void add(int basePort, int index) {
+        int port = basePort + index; 
+        CASSwitch casSwitch = new CASSwitch(port);
+        cas.add(casSwitch);
+        System.out.println("CAS switch added to CCS: " + casSwitch);
     }
-}
+
+    public void shutdown() {
+            System.out.println("Shutting down CCS shadow switch");
+        }
+    }

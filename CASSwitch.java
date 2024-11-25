@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -21,6 +22,7 @@ public class CASSwitch {
         private ExecutorService threadPool; //handling connections
         private HashMap<Byte, Boolean> firewallRules; // allow or block traffic
         private HashMap<String, Socket> globalconnections; //conenctions to other cas switch or ccs
+        ArrayList<CCSSwitch> ccs = new ArrayList<>();
 
         public CASSwitch(int port){
                 this.port = port;
@@ -30,19 +32,38 @@ public class CASSwitch {
                 this.globalconnections = new HashMap<>();
         }
 
-        public void start(){
-                try(ServerSocket serverSocket = new ServerSocket(port)){
-                        System.out.println("CAS Switch started on port " + port);
-
-                        while(true){
-                                Socket socket = serverSocket.accept();
-                                threadPool.submit(() -> handleConnection(socket));
-                        }
-
-                } catch(IOException e){
-                        System.err.println("Error starting CAS Switch: " + e.getMessage());
+        public void start() {
+                try (ServerSocket serverSocket = new ServerSocket(port)) {
+                    System.out.println("CAS Switch started on port " + port);
+            
+                    while (true) {
+                        // Accept a new connection
+                        Socket socket = serverSocket.accept();
+                        System.out.println("Connection received on CAS Switch at port " + port);
+            
+                        // Submit connection handling to the thread pool
+                        threadPool.submit(() -> {
+                            try {
+                                // Perform tasks for this connection
+                                for (int i = 0; i < 3; i++) { // Example: Iterate through tasks
+                                    System.out.println("Task " + (i + 1) + " for connection on port " + port);
+                                    Thread.sleep(500); // Simulate a task with a small delay
+                                }
+            
+                                // Handle the connection (process frames or data)
+                                handleConnection(socket);
+            
+                            } catch (Exception e) {
+                                System.err.println("Error handling connection on port " + port + ": " + e.getMessage());
+                            }
+                        });
+                    }
+            
+                } catch (IOException e) {
+                    System.err.println("Error starting CAS Switch: " + e.getMessage());
                 }
-        }
+            }
+            
 
         private void handleConnection(Socket socket){
                 try(DataInputStream inputStream = new DataInputStream(socket.getInputStream());
@@ -136,11 +157,6 @@ public class CASSwitch {
         }
         
 
-        private void updateFirewallRule(byte nodeID, boolean allow){
-                firewallRules.put(nodeID, allow);
-                System.out.println("Updated firewall rule for node: " + nodeID + ": " + (allow ? "ALLOW" : "BLOCK" ));
-        }
-
         public void recieveRules(HashMap<Byte, Boolean> newrules){
                  this.firewallRules = newrules;
                  System.out.println("Firewall rules updated by CCSSwitch");
@@ -169,5 +185,10 @@ public class CASSwitch {
                     } catch (IOException e) {
                         System.err.println("Error during shutdown: " + e.getMessage());
                     }
-                }
+        }
+
+        public void add(CCSSwitch ccsSwitch) {
+                ccs.add(ccsSwitch);
+                System.out.println("CCS switch added to CAS.");
+         }
 }

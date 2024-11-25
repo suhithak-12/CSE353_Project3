@@ -4,22 +4,25 @@ Group Members: Nancy Avila Do, Jackelyn Hernandez, Suhithareddy Kantareddy
 
 Group Member Jobs:
 Nancy Avila Do: CCSShadowSwitch.java, CCSSwitch.java, Makefile
-Jackelyn Hernandez: CASSwitch.java, Frame.java, Node.java
+Jackelyn Hernandez: CASSwitch.java, Update Frame.java(project 2), Node.java
 Suhithareddy Kantareddy: Firewall.java, Main.java
 Whole Group: README and txt files
 
-Git Repository link:
+Bugs: It has an issue with the port numbers. For some reason it continues to run after a period of time and is not shutting down properly even though there is a shutdown method present.
 
-How to compile and run the program:
+Git Repository link: https://github.com/suhithak-12/CSE353_Project3
+If you have trouble accessing the link, please let us know and we will share it with you personally.
+
+How to compile and run the program: Run the makefile then say "java Main <numNodes> <numCASSwitches> <CCSHost> <CCSPort>"
 
 Files and Descriptions:
 
 CASSwitch.java
-   Core switch in a star handles traffic, global traffic forwards to the CCS switch, implements frame forwarding logic, local firewall rules that are recieved from CCS switch, and supports multiple connections through threading. It contains the following functions: CASSwitch(int port), start(),
+   Core switch in a star handles traffic, global traffic forwards to the CCS switch, implements frame forwarding logic, local firewall rules that are recieved from CCS switch, and supports multiple connections through threading. It contains the following functions: CASSwitch(int port), start(), handleConnection(Socket socket), isAllowedByFirewall(byte source, byte destination), forwardFrame(Frame frame), recieveFrame(Frame frame), receiveTraffic(Frame frame), hasNode(byte node), recieveRules(HashMap<Byte, Boolean> newrules), connectCCS(String CCSHost, int port), shutdown(), add(CCSSwitch ccsSwitch)
 CCSShadowSwitch.java
    A back up of the CCSSwitch.java. It works exactly like the CCSSwitch.java file, but it is used as a back up if the main files fails.
 CCSSwitch.java
-   Central core switch for the SoSs network which creates a bridge bwtween CAS swicthes for global communication and implements fire wall rules (globally) ACKs for global traffic, sends local firewall rules to CAS swicthes. It handles traffic between CAS switches. It has the following functions: readFirewall(), setRule(ArrayList<String> rules), sendRules(), checkrules(Frame frame, ArrayList<String> rules), flooding(Frame frame), sendTraffic(Frame frame, ArrayList<String> cas), trafficHandler(Frame frame).
+   Central core switch for the SoSs network which creates a bridge bwtween CAS swicthes for global communication and implements fire wall rules (globally) ACKs for global traffic, sends local firewall rules to CAS swicthes. It handles traffic between CAS switches. It has the following functions: readFirewall(), sendRules(), checkRule(Frame frame, ArrayList<String> rules), flooding(Frame frame), sendTraffic(Frame frame, ArrayList<String> cas), trafficHandler(Frame frame), add(int basePort, int index), shutdown(), start().
 Firewall.java
    Loads the firewall rules from the input file and checks whether specific traffic should be allowed or blocked. It works as a security measure chekcing the files. It has the following functions: Firewall(), loadrules(String name), isAllowed(String source, String destination), and printRules().
 Firewall.txt
@@ -43,7 +46,7 @@ Feature                                                                         
 4) CAS, CCS Switches allows multiple connections                                complete
 5) CAS, CCS Switches flood frames when it doesn't know the                      complete
    destination
-6) CAS, CCS Switches learn destinations, and doesn't                            Incomplete.
+6) CAS, CCS Switches learn destinations, and doesn't                            complete.
    forward packets to any port except the one required
 7) CAS connects to CCS                                                          complete
 8) CAS receives local firewall rules                                            complete
@@ -52,11 +55,10 @@ Feature                                                                         
 11) CCS passes global traffic                                                   complete
 12) CCS does the global firewalls                                               complete
 13) CCS Shadow switches run and test properly                                   complete
-14) Node class                                                                  Partially Complete – see below
+14) Node class                                                                  complete
 15) Nodes instantiate, and open connection to the switch                        complete
 16) Nodes open their input files, and send data to switch.                      complete
-17) Nodes open their output files, and save data that they                      Partial – They also save flooded
-                                                                                frames received
+17) Nodes open their output files, and save data that they recieved     Partial: Reads only the firewall_rules.txt
 18) Node will sometimes drop acknowledgment                                     complete
 19) Node will sometimes create erroneous frame                                  complete
-20) Node will sometimes reject traffic                                          complete
+20) Node will sometimes reject traffic                                          Incomplete
