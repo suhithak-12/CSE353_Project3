@@ -1,5 +1,4 @@
 /*
-JACKY
 Core switch in a star
 handles traffic, global traffic forwards to the CCS switch
 implements frame forwarding logic, local firewall rules that are recieved from CCS switch
@@ -11,6 +10,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -56,15 +56,10 @@ public class CASSwitch {
                         // listen for frames
                         while(true){
                                 byte[] frameBytes = new byte[256];
-                                //int bytesRead = inputStream.read(frameBytes);
+                                int bytesRead = inputStream.read(frameBytes);
 
-                                if (nodeID == 1) {
-                                        updateFirewallRule(nodeID, true); // allow node 1
-                                } else {
-                                        updateFirewallRule(nodeID, false); // block other nodes
-                                }
-
-                                Frame frame = Frame.mkFrame(frameBytes);
+                                if (bytesRead == -1) {
+                                Frame frame = Frame.mkFrame(Arrays.copyOf(frameBytes, bytesRead));
                                 System.out.println("Received frame from node " + frame.getSource() + " to node " + frame.getDest());
 
                                 if(isAllowedByFirewall(frame.getSource(), frame.getDest())){
@@ -73,6 +68,7 @@ public class CASSwitch {
                                         System.out.println("Blocked frame due to firewall rules: " + frame.getSource() + " -> " + frame.getDest());
                                 }
                         } 
+                 }
                 } catch (IOException e){
                         System.err.println("Error in connection: " + e.getMessage());
                 } finally {
@@ -92,6 +88,7 @@ public class CASSwitch {
                 byte destination = frame.getDest();
 
                 if(nodeConnections.containsKey(destination)){
+                        //local
                         Socket dSocket = nodeConnections.get(destination);
                         DataOutputStream dOutputStream = new DataOutputStream(dSocket.getOutputStream());
 
@@ -99,6 +96,7 @@ public class CASSwitch {
                         dOutputStream.flush();
                         System.out.println("Forward frame to Node " + destination);
                 } else if (globalconnections.containsKey("CCS")) {
+                        //gobal so forwarding to ccs
                         Socket ccsSocket = globalconnections.get("CCS");
                         DataOutputStream ccsOutputStream = new DataOutputStream(ccsSocket.getOutputStream());
 
@@ -159,7 +157,17 @@ public class CASSwitch {
         }
 
         public void shutdown() {
-                // TODO Auto-generated method stub
-                throw new UnsupportedOperationException("Unimplemented method 'shutdown'");
-        }
+                try {
+                        for (Socket socket : nodeConnections.values()) {
+                            socket.close();
+                        }
+                        for (Socket globalSocket : globalconnections.values()) {
+                            globalSocket.close();
+                        }
+                        threadPool.shutdownNow();
+                        System.out.println("CAS Switch shut down gracefully.");
+                    } catch (IOException e) {
+                        System.err.println("Error during shutdown: " + e.getMessage());
+                    }
+                }
 }

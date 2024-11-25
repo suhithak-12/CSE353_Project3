@@ -62,7 +62,7 @@ public class Main {
             // waiting for the user to finish or terminate the program
             while (true) {
                 try {
-                    Thread.sleep(1000); // Simulate program running
+                    Thread.sleep(1000); 
                 } catch (InterruptedException e) {
                     break; 
                 }
