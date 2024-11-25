@@ -112,4 +112,14 @@ public class CCSSwitch {
         System.out.println("CAS switch added to CCS.");
     }
 
+    public void shutdown() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'shutdown'");
+    }
+
+    public void start() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'start'");
+    }
+
 }
